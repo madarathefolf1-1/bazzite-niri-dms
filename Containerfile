@@ -25,13 +25,9 @@ RUN dnf5 copr enable -y yorickmuralt/niri && \
     ghostty \
     && dnf5 clean all
 
-# Ensure the system looks for custom global configs inside /etc
-# Custom user defaults can be placed in /etc/skel/ to auto-populate on new accounts
-
-# ---- AUTOMATED SIGNING TRUST FOR MASS DEPLOYMENT ----
-# Copy your local public key into the image's trusted directory
+# ---- AUTOMATED SIGNING TRUST ----
+# This MUST happen after the workspace is checked out and right before the build finishes
 COPY cosign.pub /usr/etc/pki/containers/bazzite-niri-dms.pub
 
-# Write a local policy rule telling the OS to verify updates using that key
 RUN mkdir -p /usr/etc/containers/registries.d && \
     echo -e "docker:\n  ghcr.io/madarathefolf1-1/bazzite-niri-dms:\n    lookaside-verify-disabled: true\n    keypath: /usr/etc/pki/containers/bazzite-niri-dms.pub" > /usr/etc/containers/registries.d/bazzite-niri-dms.yaml
