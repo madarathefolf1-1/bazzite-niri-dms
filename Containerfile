@@ -31,4 +31,4 @@ RUN dnf5 copr enable -y yalter/niri-git && \
 COPY cosign.pub /usr/etc/pki/containers/bazzite-niri-dms.pub
 
 RUN mkdir -p /usr/etc/containers/registries.d && \
-    echo -e "docker:\n  ghcr.io/YOUR_GITHUB_USERNAME/bazzite-niri-dms:\n    lookaside-verify-disabled: true\n    keypath: /usr/etc/pki/containers/bazzite-niri-dms.pub" > /usr/etc/containers/registries.d/bazzite-niri-dms.yaml
+    echo -e "docker:\n  ghcr.io/madarathefolf1-1/bazzite-niri-dms:\n    lookaside-verify-disabled: true\n    keypath: /usr/etc/pki/containers/bazzite-niri-dms.pub" > /usr/etc/containers/registries.d/bazzite-niri-dms.yaml
