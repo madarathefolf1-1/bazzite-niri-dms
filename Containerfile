@@ -3,11 +3,14 @@ FROM ghcr.io/ublue-os/bazzite-nvidia-open:testing
 
 # Combine repo configuration and installation into a single optimized layer
 RUN dnf5 copr enable -y yalter/niri-git && \
-    # Pull the explicit Fedora 43 repo file directly to bypass DNF5's auto-detection
+    # 1. Download the repo file
     curl -Lo /etc/yum.repos.d/_copr_avengemedia-dankmaterialshell.repo \
     https://copr.fedorainfracloud.org/coprs/avengemedia/dankmaterialshell/repo/fedora-43/avengemedia-dankmaterialshell-fedora-43.repo && \
-    # Force DNF to prefer the Git repository over native fallbacks
+    # 2. Hardcode the release version to 43 so DNF5 doesn't auto-convert it to 44
+    sed -i 's/\$releasever/43/g' /etc/yum.repos.d/_copr_avengemedia-dankmaterialshell.repo && \
+    # 3. Force DNF to prefer the Git repository for Niri over native fallbacks
     echo "priority=1" >> /etc/yum.repos.d/_copr:copr.fedorainfracloud.org:yalter:niri-git.repo && \
+    # 4. Run the main package installation
     dnf5 install -y \
     niri \
     DankMaterialShell \
