@@ -2,8 +2,10 @@
 FROM ghcr.io/ublue-os/bazzite-nvidia-open:testing
 
 # Combine repo configuration and installation into a single optimized layer
-RUN dnf5 copr enable -y yorickmuralt/niri && \
+RUN dnf5 copr enable -y yalter/niri-git && \
     dnf5 copr enable -y avengemedia/dankmaterialshell && \
+    # Force DNF to prefer the Git repository over everything else
+    echo "priority=1" >> /etc/yum.repos.d/_copr:copr.fedorainfracloud.org:yalter:niri-git.repo && \
     dnf5 install -y \
     niri \
     DankMaterialShell \
@@ -26,8 +28,7 @@ RUN dnf5 copr enable -y yorickmuralt/niri && \
     && dnf5 clean all
 
 # ---- AUTOMATED SIGNING TRUST ----
-# This MUST happen after the workspace is checked out and right before the build finishes
 COPY cosign.pub /usr/etc/pki/containers/bazzite-niri-dms.pub
 
 RUN mkdir -p /usr/etc/containers/registries.d && \
-    echo -e "docker:\n  ghcr.io/madarathefolf1-1/bazzite-niri-dms:\n    lookaside-verify-disabled: true\n    keypath: /usr/etc/pki/containers/bazzite-niri-dms.pub" > /usr/etc/containers/registries.d/bazzite-niri-dms.yaml
+    echo -e "docker:\n  ghcr.io/YOUR_GITHUB_USERNAME/bazzite-niri-dms:\n    lookaside-verify-disabled: true\n    keypath: /usr/etc/pki/containers/bazzite-niri-dms.pub" > /usr/etc/containers/registries.d/bazzite-niri-dms.yaml
